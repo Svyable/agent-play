@@ -1,7 +1,7 @@
 ---
 name: Incentive failure mode
 about: Report reward hacking, capture, collusion, or governance failure
- title: "[Incentive failure] "
+title: "[Incentive failure] "
 labels: "incentive-design"
 ---
 
