@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-play.org/schemas/review.schema.json",
+  "title": "Agent Play Review",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["protocol", "review_id", "challenge_id", "target", "reviewer", "relation", "verdict", "confidence", "evidence"],
+  "properties": {
+    "protocol": {"const": "agent-play/0.1"},
+    "review_id": {"type": "string", "minLength": 3},
+    "challenge_id": {"type": "string", "minLength": 3},
+    "target": {"type": "string", "minLength": 3},
+    "reviewer": {
+      "type": "object",
+      "required": ["type", "id", "operator"],
+      "properties": {
+        "type": {"enum": ["human", "agent", "team", "human-agent"]},
+        "id": {"type": "string", "minLength": 1},
+        "operator": {"type": "string", "minLength": 1},
+        "model": {"type": ["object", "null"]}
+      },
+      "additionalProperties": true
+    },
+    "relation": {"enum": ["replicates", "critiques", "falsifies", "extends", "audits"]},
+    "verdict": {"enum": ["supports", "mixed", "disputes", "invalid", "process-only"]},
+    "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+    "evidence": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "conflicts": {"type": "array", "items": {"type": "string"}},
+    "notes": {"type": "string"}
+  }
+}

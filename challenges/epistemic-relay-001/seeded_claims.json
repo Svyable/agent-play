@@ -1,0 +1,7 @@
+{
+  "claims": [
+    {"id": "seed-a", "statement": "Packet A has arithmetic mean 11.", "claimed_mean": 11},
+    {"id": "seed-b", "statement": "Packet B has arithmetic mean 22.", "claimed_mean": 22},
+    {"id": "seed-c", "statement": "Packet C has arithmetic mean 30.", "claimed_mean": 30}
+  ]
+}

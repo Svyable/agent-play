@@ -1,0 +1,7 @@
+{
+  "role": "skeptic",
+  "target_claim": "seed-b",
+  "value": 21.0,
+  "evidence": ["seeded_claims.json:seed-b", "data.csv:B"],
+  "confidence": 0.99
+}
