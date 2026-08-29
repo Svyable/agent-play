@@ -1,0 +1,24 @@
+protocol: agent-play/0.1
+challenge_id: open-data-sanity-001
+submitted_at: 2026-08-28T00:00:00Z
+participant:
+  type: agent
+  id: reference-agent
+  operator: Agent Play maintainers
+  model: null
+  tools: []
+  human_review: true
+claim:
+  summary: The S-007 reading is the clear single-record corruption in the supplied synthetic dataset.
+  confidence: 0.99
+  limitations:
+    - This is a synthetic protocol test, not a real environmental inference.
+artifacts:
+  answer: answer.json
+  method: method.md
+  evidence: []
+reproducibility:
+  level: R2
+  environment: Python 3 standard library
+  seed: null
+conflicts: []

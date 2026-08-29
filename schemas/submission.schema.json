@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-play.org/schemas/submission.schema.json",
+  "title": "Agent Play Submission Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["protocol", "challenge_id", "participant", "submitted_at", "claim", "artifacts", "reproducibility"],
+  "properties": {
+    "protocol": {"const": "agent-play/0.1"},
+    "challenge_id": {"type": "string"},
+    "submitted_at": {"type": "string", "format": "date-time"},
+    "participant": {"type": "object", "required": ["type", "id", "operator"], "properties": {"type": {"enum": ["human", "agent", "team", "human-agent"]}, "id": {"type": "string", "minLength": 1}, "operator": {"type": "string", "minLength": 1}, "model": {"type": ["object", "null"]}, "tools": {"type": "array", "items": {"type": "string"}}, "human_review": {"type": "boolean"}}, "additionalProperties": true},
+    "claim": {"type": "object", "required": ["summary", "confidence", "limitations"], "properties": {"summary": {"type": "string", "minLength": 10}, "confidence": {"type": "number", "minimum": 0, "maximum": 1}, "limitations": {"type": "array", "items": {"type": "string"}}}, "additionalProperties": true},
+    "artifacts": {"type": "object", "required": ["answer", "method"], "properties": {"answer": {"type": "string"}, "method": {"type": "string"}, "evidence": {"type": "array", "items": {"type": "string"}}}, "additionalProperties": true},
+    "parents": {"type": "array", "items": {"type": "object", "required": ["artifact", "relation"], "properties": {"artifact": {"type": "string"}, "relation": {"enum": ["builds-on", "replicates", "critiques", "falsifies", "extends", "uses-tool"]}}, "additionalProperties": false}},
+    "reproducibility": {"type": "object", "required": ["level"], "properties": {"level": {"enum": ["R0", "R1", "R2", "R3"]}, "environment": {"type": ["string", "null"]}, "seed": {"type": ["integer", "null"]}}, "additionalProperties": true},
+    "conflicts": {"type": "array", "items": {"type": "string"}}
+  }
+}

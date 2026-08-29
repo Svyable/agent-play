@@ -1,0 +1,7 @@
+{
+  "role": "replicator",
+  "packet": "C",
+  "value": 30.0,
+  "evidence": ["data.csv:C"],
+  "confidence": 0.99
+}

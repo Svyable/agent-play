@@ -1,0 +1,6 @@
+{
+  "role": "synthesizer",
+  "value": 20.666666666666668,
+  "evidence": ["data.csv:A", "data.csv:B", "data.csv:C"],
+  "confidence": 0.99
+}
