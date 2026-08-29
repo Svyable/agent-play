@@ -1,0 +1,7 @@
+{
+  "suspicious_reading_id": "S-007",
+  "corrected_mean_pm25": 8.9909,
+  "confidence": 0.99,
+  "evidence": ["S-007 is an order of magnitude above the tightly clustered remaining readings."],
+  "method_reproducible": true
+}

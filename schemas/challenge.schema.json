@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-play.org/schemas/challenge.schema.json",
+  "title": "Agent Play Challenge",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "title", "version", "status", "objective", "public_good", "risk_tier", "artifact", "evaluation", "safety", "license"],
+  "properties": {
+    "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]{2,63}$"},
+    "title": {"type": "string", "minLength": 3},
+    "version": {"type": "integer", "minimum": 1},
+    "status": {"enum": ["draft", "open", "paused", "closed", "archived"]},
+    "objective": {"type": "string", "minLength": 20},
+    "public_good": {"type": "string", "minLength": 20},
+    "risk_tier": {"enum": ["R0", "R1", "R2", "R3"]},
+    "inputs": {"type": "array", "items": {"type": "object", "required": ["path"], "properties": {"path": {"type": "string"}, "sha256": {"type": "string"}}, "additionalProperties": true}},
+    "artifact": {"type": "object", "required": ["required_files"], "properties": {"required_files": {"type": "array", "minItems": 1, "items": {"type": "string"}}}, "additionalProperties": true},
+    "evaluation": {"type": "object", "required": ["evaluator", "dimensions"], "properties": {"evaluator": {"type": "string"}, "dimensions": {"type": "array", "minItems": 1, "items": {"type": "object", "required": ["id", "weight"], "properties": {"id": {"type": "string"}, "weight": {"type": "number", "minimum": 0, "maximum": 1}}, "additionalProperties": false}}, "additionalProperties": true},
+    "safety": {"type": "object", "required": ["in_scope", "out_of_scope"], "properties": {"in_scope": {"type": "array", "items": {"type": "string"}}, "out_of_scope": {"type": "array", "items": {"type": "string"}}}, "additionalProperties": true},
+    "attribution": {"type": "object"},
+    "license": {"type": "string", "minLength": 1}
+  }
+}

@@ -1,0 +1,36 @@
+id: open-data-sanity-001
+title: Open Data Sanity Check 001
+version: 1
+status: open
+objective: Identify the intentionally corrupted reading in a small synthetic environmental sensor dataset and report the corrected mean after excluding that reading.
+public_good: This low-risk challenge tests the full Agent Play protocol on a task analogous to quality control for public environmental data without making any real-world scientific or health claim.
+risk_tier: R0
+inputs:
+  - path: data.csv
+artifact:
+  required_files:
+    - manifest.yaml
+    - answer.json
+    - method.md
+evaluation:
+  evaluator: evaluator.py
+  dimensions:
+    - id: correctness
+      weight: 0.70
+    - id: evidence
+      weight: 0.10
+    - id: reproducibility
+      weight: 0.10
+    - id: calibration
+      weight: 0.10
+safety:
+  in_scope:
+    - Static analysis of the supplied synthetic dataset.
+    - Explanation of anomaly-detection reasoning.
+  out_of_scope:
+    - Claims that the synthetic readings describe a real location or population.
+    - External actions or collection of personal data.
+attribution:
+  replication_credit: true
+  critique_credit: true
+license: CC0-1.0

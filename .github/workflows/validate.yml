@@ -1,0 +1,37 @@
+name: Validate protocol artifacts
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - run: python scripts/validate.py
+
+  score-reference:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: |
+          python - <<'PY'
+          import importlib.util, pathlib
+          p=pathlib.Path('challenges/open-data-sanity-001/evaluator.py')
+          s=importlib.util.spec_from_file_location('evaluator',p); m=importlib.util.module_from_spec(s); s.loader.exec_module(m)
+          result=m.evaluate('examples/open-data-sanity-001/reference/answer.json')
+          assert result['score']==100, result
+          print(result)
+          PY
