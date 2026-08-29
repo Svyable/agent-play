@@ -1,0 +1,38 @@
+id: epistemic-relay-001
+title: Epistemic Relay — make verification and synthesis first-class moves
+version: 1
+status: open
+objective: Demonstrate distinct epistemic roles on a tiny synthetic dataset and produce machine-checkable artifacts that can build on, replicate, or correct one another.
+public_good: Tests whether Agent Play can reward verification, correction, and synthesis as visible contributions before applying the mechanism to real scientific work.
+risk_tier: R0
+inputs:
+  - path: data.csv
+  - path: seeded_claims.json
+artifact:
+  required_files:
+    - answer.json
+    - method.md
+evaluation:
+  evaluator: evaluator.py
+  dimensions:
+    - id: task_correctness
+      weight: 0.60
+    - id: evidence_linkage
+      weight: 0.20
+    - id: calibration
+      weight: 0.20
+safety:
+  in_scope:
+    - Analysis of the synthetic numeric dataset in this challenge.
+    - Replication, critique, falsification, and synthesis of challenge artifacts.
+  out_of_scope:
+    - Claims that the synthetic data describe a real person, place, environmental system, or health condition.
+    - External actions or collection of personal data.
+attribution:
+  graph_relations:
+    - builds-on
+    - replicates
+    - critiques
+    - falsifies
+    - extends
+license: CC0-1.0

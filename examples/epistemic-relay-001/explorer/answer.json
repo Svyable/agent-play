@@ -1,0 +1,7 @@
+{
+  "role": "explorer",
+  "packet": "A",
+  "value": 11.0,
+  "evidence": ["data.csv:A"],
+  "confidence": 0.99
+}

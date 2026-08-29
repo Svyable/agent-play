@@ -2,10 +2,13 @@
 """Build a deterministic public leaderboard from merged submission artifacts."""
 from __future__ import annotations
 import importlib.util
+import inspect
 import json
 import pathlib
 
 import yaml
+
+from build_contribution_graph import build as build_graph
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 
@@ -33,7 +36,19 @@ def load_module(path: pathlib.Path):
     return module
 
 
+def evaluate(evaluator, answer_path, manifest):
+    params = inspect.signature(evaluator.evaluate).parameters
+    kwargs = {}
+    if "manifest" in params:
+        kwargs["manifest"] = manifest
+    if "root" in params:
+        kwargs["root"] = ROOT
+    return evaluator.evaluate(answer_path, **kwargs)
+
+
 def main() -> int:
+    graph = build_graph(ROOT)
+    signals = {node["id"]: node.get("signals", {}) for node in graph["nodes"]}
     rows = []
     submissions = ROOT / "submissions"
     if submissions.exists():
@@ -44,7 +59,8 @@ def main() -> int:
             challenge = load_yaml(challenge_dir / "challenge.yaml")
             evaluator = load_module(challenge_dir / challenge["evaluation"]["evaluator"])
             answer_path = manifest_path.parent / manifest["artifacts"]["answer"]
-            scorecard = evaluator.evaluate(answer_path)
+            scorecard = evaluate(evaluator, answer_path, manifest)
+            artifact_id = str(manifest_path.parent.relative_to(ROOT))
             rows.append({
                 "challenge_id": challenge_id,
                 "participant_id": manifest["participant"]["id"],
@@ -52,15 +68,18 @@ def main() -> int:
                 "submitted_at": str(manifest["submitted_at"]),
                 "score": scorecard["score"],
                 "dimensions": scorecard["dimensions"],
+                "metadata": scorecard.get("metadata", {}),
+                "network_signals": signals.get(artifact_id, {}),
                 "status": "scored",
-                "path": str(manifest_path.parent.relative_to(ROOT)),
+                "path": artifact_id,
             })
     rows.sort(key=lambda r: (-r["score"], r["submitted_at"], r["participant_id"]))
     out = ROOT / "ledger"
     out.mkdir(exist_ok=True)
     payload = {"protocol": "agent-play/0.1", "generated_from": "merged repository artifacts", "entries": rows}
     (out / "leaderboard.json").write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
-    print(f"Wrote {len(rows)} leaderboard entr{'y' if len(rows) == 1 else 'ies'}.")
+    (out / "contribution-graph.json").write_text(json.dumps(graph, indent=2) + "\n", encoding="utf-8")
+    print(f"Wrote {len(rows)} leaderboard entr{'y' if len(rows) == 1 else 'ies'} and {len(graph['edges'])} graph edges.")
     return 0
 
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate Agent Play challenge and submission manifests without executing participant code."""
+"""Validate Agent Play protocol artifacts without executing participant code."""
 from __future__ import annotations
 import json
 import pathlib
@@ -39,9 +39,17 @@ def validate(instance, schema, label):
     return len(errors)
 
 
+def internal_target_exists(target: str) -> bool:
+    if not target.startswith(("submissions/", "reviews/")):
+        return True
+    return (ROOT / target).exists()
+
+
 def main() -> int:
     challenge_schema = load_json(ROOT / "schemas/challenge.schema.json")
     submission_schema = load_json(ROOT / "schemas/submission.schema.json")
+    review_schema_path = ROOT / "schemas/review.schema.json"
+    review_schema = load_json(review_schema_path) if review_schema_path.exists() else None
     failures = 0
 
     for path in sorted((ROOT / "challenges").glob("*/challenge.yaml")):
@@ -58,11 +66,31 @@ def main() -> int:
                 if relative and not (base / relative).is_file():
                     print(f"ERROR {path.relative_to(ROOT)}: missing artifact {relative}")
                     failures += 1
+            for parent in manifest.get("parents", []):
+                target = parent.get("artifact", "")
+                if target and not internal_target_exists(target):
+                    print(f"ERROR {path.relative_to(ROOT)}: missing parent artifact {target}")
+                    failures += 1
+
+    reviews = ROOT / "reviews"
+    if reviews.exists() and review_schema:
+        for path in sorted(reviews.glob("*/*/review.yaml")):
+            review = load_yaml(path)
+            failures += validate(review, review_schema, str(path.relative_to(ROOT)))
+            base = path.parent
+            for evidence in review.get("evidence", []):
+                if not (base / evidence).is_file():
+                    print(f"ERROR {path.relative_to(ROOT)}: missing review evidence {evidence}")
+                    failures += 1
+            target = review.get("target", "")
+            if target and not internal_target_exists(target):
+                print(f"ERROR {path.relative_to(ROOT)}: missing review target {target}")
+                failures += 1
 
     if failures:
         print(f"Validation failed with {failures} error(s).")
         return 1
-    print("Agent Play manifests valid.")
+    print("Agent Play protocol artifacts valid.")
     return 0
 
 

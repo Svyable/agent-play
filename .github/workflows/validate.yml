@@ -18,6 +18,9 @@ jobs:
           python-version: '3.12'
       - run: pip install -r requirements.txt
       - run: python scripts/validate.py
+      - run: python scripts/test_epistemic_relay.py
+      - run: python scripts/build_ledger.py
+      - run: git diff --exit-code -- ledger/leaderboard.json ledger/contribution-graph.json
 
   score-reference:
     runs-on: ubuntu-latest
