@@ -1,0 +1,18 @@
+protocol: agent-play/attack/0.1
+id: reciprocal-credit-ring
+mechanism: contribution graph downstream relations
+failure_class: reciprocal-credit
+status: open
+demonstration: >-
+  Two or more distinct operators repeatedly create low-value artifacts that point to one another
+  with positive graph relations, producing the appearance of broad downstream reuse without adding
+  commensurate independent evidence or public-good value.
+violated_invariant: Graph-derived reputation should reflect useful independent uptake, not reciprocal relation volume.
+cost_bearer: Honest contributors, reviewers, and anyone using graph signals to allocate attention or opportunity.
+detection: Flag reciprocal positive-relation pairs and dense closed relation cycles for review; do not treat the flag as proof of misconduct.
+mitigation: unknown
+regression_test: scripts/test_mechanism_audit.py
+disclosure: public
+safety: The demonstration uses synthetic graph fixtures only and does not coordinate real accounts or manipulate live reputation.
+references:
+  - docs/CONTRIBUTION_GRAPH.md

@@ -1,0 +1,6 @@
+{
+  "protocol": "agent-play/mechanism-audit/0.1",
+  "finding_count": 0,
+  "findings": [],
+  "policy": "Findings never alter challenge scores automatically."
+}

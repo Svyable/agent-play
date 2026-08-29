@@ -50,6 +50,8 @@ def main() -> int:
     submission_schema = load_json(ROOT / "schemas/submission.schema.json")
     review_schema_path = ROOT / "schemas/review.schema.json"
     review_schema = load_json(review_schema_path) if review_schema_path.exists() else None
+    attack_schema_path = ROOT / "schemas/attack.schema.json"
+    attack_schema = load_json(attack_schema_path) if attack_schema_path.exists() else None
     failures = 0
 
     for path in sorted((ROOT / "challenges").glob("*/challenge.yaml")):
@@ -85,6 +87,16 @@ def main() -> int:
             target = review.get("target", "")
             if target and not internal_target_exists(target):
                 print(f"ERROR {path.relative_to(ROOT)}: missing review target {target}")
+                failures += 1
+
+    attacks = ROOT / "attacks"
+    if attacks.exists() and attack_schema:
+        for path in sorted(attacks.glob("*/attack.yaml")):
+            attack = load_yaml(path)
+            failures += validate(attack, attack_schema, str(path.relative_to(ROOT)))
+            regression = attack.get("regression_test")
+            if regression and not (ROOT / regression).is_file():
+                print(f"ERROR {path.relative_to(ROOT)}: missing regression test {regression}")
                 failures += 1
 
     if failures:

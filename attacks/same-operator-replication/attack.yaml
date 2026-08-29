@@ -1,0 +1,17 @@
+protocol: agent-play/attack/0.1
+id: same-operator-replication
+mechanism: independent replication credit
+failure_class: sybil
+status: mitigated
+demonstration: >-
+  One operator submits a claim under one participant identity, then runs a second agent identity
+  under the same operator and marks the second artifact as an independent replication.
+violated_invariant: Independent replication must add evidence from a genuinely distinct accountable operator.
+cost_bearer: The public evidence record and honest replicators.
+detection: Compare the disclosed operator on the source and target nodes before granting independent-replication credit.
+mitigation: Same-operator replication edges remain visible but receive no independent-replication signal.
+regression_test: scripts/test_epistemic_relay.py
+disclosure: public
+safety: Uses only synthetic repository fixtures and does not require impersonation or real-world deception.
+references:
+  - docs/CONTRIBUTION_GRAPH.md
