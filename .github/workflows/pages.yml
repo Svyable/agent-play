@@ -25,9 +25,12 @@ jobs:
       - run: pip install -r requirements.txt
       - run: python scripts/validate.py
       - run: python scripts/build_ledger.py
+      - run: python scripts/audit_mechanisms.py
       - run: |
           mkdir -p site/data
           cp ledger/leaderboard.json site/data/leaderboard.json
+          cp ledger/contribution-graph.json site/data/contribution-graph.json
+          cp ledger/mechanism-audit.json site/data/mechanism-audit.json
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
