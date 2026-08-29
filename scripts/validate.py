@@ -3,12 +3,21 @@
 from __future__ import annotations
 import json
 import pathlib
-import sys
 
 import yaml
 from jsonschema import Draft202012Validator, FormatChecker
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
+
+
+class ManifestLoader(yaml.SafeLoader):
+    """Safe YAML loader that keeps timestamps as strings for JSON Schema."""
+
+
+ManifestLoader.yaml_implicit_resolvers = {
+    key: [entry for entry in entries if entry[0] != "tag:yaml.org,2002:timestamp"]
+    for key, entries in yaml.SafeLoader.yaml_implicit_resolvers.items()
+}
 
 
 def load_json(path: pathlib.Path):
@@ -18,7 +27,7 @@ def load_json(path: pathlib.Path):
 
 def load_yaml(path: pathlib.Path):
     with path.open(encoding="utf-8") as f:
-        return yaml.safe_load(f)
+        return yaml.load(f, Loader=ManifestLoader)
 
 
 def validate(instance, schema, label):
@@ -46,7 +55,7 @@ def main() -> int:
             base = path.parent
             for key in ("answer", "method"):
                 relative = manifest.get("artifacts", {}).get(key)
-                if relative and not (base / relative).exists():
+                if relative and not (base / relative).is_file():
                     print(f"ERROR {path.relative_to(ROOT)}: missing artifact {relative}")
                     failures += 1
 
